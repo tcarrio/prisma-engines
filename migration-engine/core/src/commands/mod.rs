@@ -9,6 +9,7 @@ mod migration_progress;
 mod push_schema;
 mod reset;
 mod unapply_migration;
+mod up;
 
 pub use apply_migration::*;
 pub use calculate_database_steps::*;
@@ -21,6 +22,7 @@ pub use migration_progress::*;
 pub use push_schema::{PushSchemaCommand, PushSchemaInput, PushSchemaOutput};
 pub use reset::*;
 pub use unapply_migration::*;
+pub use up::*;
 
 use migration_connector::{
     MigrationError, MigrationStep, MigrationWarning, PrettyDatabaseMigrationStep, UnexecutableMigration,

@@ -44,7 +44,7 @@ struct DmmfCommand {
     file_path: Option<String>,
 }
 
-#[tokio::main]
+#[async_std::main]
 async fn main() -> anyhow::Result<()> {
     init_logger();
 

@@ -24,3 +24,6 @@ members = [
   "libs/prisma-value",
   "libs/feature-flags",
 ]
+
+[patch."https://github.com/prisma/quaint"]
+quaint = { path = "../quaint" }

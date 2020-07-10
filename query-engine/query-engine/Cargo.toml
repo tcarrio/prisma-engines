@@ -12,7 +12,6 @@ mssql = ["datamodel/mssql", "sql-connector/mssql"]
 
 [dependencies]
 futures = "0.3"
-tokio = { version = "=0.2.13", features = ["rt-threaded", "macros"] }
 
 async-trait = "0.1"
 feature-flags = { path = "../../libs/feature-flags" }
@@ -26,7 +25,7 @@ graphql-parser = { git = "https://github.com/prisma/graphql-parser", optional = 
 serde = { version = "1.0", features = ["derive"] }
 serde_json = { version = "1.0", features = [ "preserve_order" ] }
 tide = "0.10.0"
-async-std = { version = "1.6.2", features = ["attributes", "tokio02"] }
+async-std = { version = "1.6.2", features = ["attributes"] }
 base64 = "0.10"
 failure = { version = "0.1" }
 indexmap = { version = "1.0", features = [ "serde-1" ] }
@@ -50,7 +49,7 @@ rustc_version = "0.2.3"
 [dev-dependencies]
 test-macros = { path = "../../libs/test-macros" }
 test-setup = { path = "../../libs/test-setup" }
-quaint = { git = "https://github.com/prisma/quaint", features = ["full", "tracing-log"] }
+quaint = { git = "https://github.com/prisma/quaint", features = ["full", "tracing-log", "runtime-async-std"], branch = "sqlx" }
 migration-connector = { path = "../../migration-engine/connectors/migration-connector" }
 migration-core = { path = "../../migration-engine/core" }
 introspection-core = { path = "../../introspection-engine/core" }

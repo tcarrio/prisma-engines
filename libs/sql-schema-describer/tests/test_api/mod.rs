@@ -148,13 +148,13 @@ pub async fn test_api_helper_for_postgres(url: String, db_name: &'static str, co
         "DROP SCHEMA IF EXISTS \"{}\" CASCADE;",
         connection_info.schema_name()
     ));
-    database.query_raw(&drop_schema, &[]).await.ok();
+    database.query_raw(&drop_schema, vec![]).await.ok();
 
     let create_schema = dbg!(format!(
         "CREATE SCHEMA IF NOT EXISTS \"{}\";",
         connection_info.schema_name()
     ));
-    database.query_raw(&create_schema, &[]).await.ok();
+    database.query_raw(&create_schema, vec![]).await.ok();
 
     TestApi {
         connector_name,
@@ -208,7 +208,7 @@ impl BarrelMigrationExecutor {
 async fn run_full_sql(database: &Arc<dyn Queryable + Send + Sync>, full_sql: &str) {
     for sql in full_sql.split(";") {
         if sql != "" {
-            database.query_raw(&sql, &[]).await.unwrap();
+            database.query_raw(&sql, vec![]).await.unwrap();
         }
     }
 }

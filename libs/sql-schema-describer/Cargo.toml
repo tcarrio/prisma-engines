@@ -18,13 +18,14 @@ thiserror = "1.0.16"
 
 [dependencies.quaint]
 git = "https://github.com/prisma/quaint"
-features = ["single", "serde-support"]
+branch = "sqlx"
+features = ["single", "serde-support", "runtime-async-std"]
 
 [dev-dependencies]
 anyhow = "1.0.28"
 barrel = { version = "0.6.5-alpha.0", features = ["sqlite3", "mysql", "pg"] }
 pretty_assertions = "0.6"
-tokio = { version = "=0.2.13", features = ["rt-threaded", "macros"] }
+async-std = { version = "1.6.2", features = ["attributes"] }
 futures = "0.3"
 test-setup = { path = "../test-setup" }
 test-macros = { path = "../test-macros" }

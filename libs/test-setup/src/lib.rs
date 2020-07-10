@@ -357,9 +357,9 @@ pub async fn create_mysql_database(original_url: &Url) -> Result<Quaint, AnyErro
     let conn = Quaint::new(url.as_str()).await.unwrap();
 
     let drop_stmt = format!("DROP DATABASE IF EXISTS `{}`", db_name);
-    conn.query_raw(&drop_stmt, &[]).await.unwrap();
+    conn.query_raw(&drop_stmt, vec![]).await.unwrap();
     let create_stmt = format!("CREATE DATABASE `{}`", db_name);
-    conn.query_raw(&create_stmt, &[]).await.unwrap();
+    conn.query_raw(&create_stmt, vec![]).await.unwrap();
 
     Ok(Quaint::new(original_url.as_str()).await?)
 }
@@ -376,11 +376,11 @@ pub async fn create_postgres_database(original_url: &Url) -> Result<Quaint, AnyE
 
     let conn = Quaint::new(url.as_str()).await.unwrap();
 
-    conn.query_raw(&drop_stmt, &[]).await.ok();
-    conn.query_raw(&create_stmt, &[]).await.ok();
+    conn.query_raw(&drop_stmt, vec![]).await.ok();
+    conn.query_raw(&create_stmt, vec![]).await.ok();
 
     let conn = Quaint::new(original_url.as_str()).await?;
-    conn.query_raw(&create_schema_stmt, &[]).await.ok();
+    conn.query_raw(&create_schema_stmt, vec![]).await.ok();
 
     Ok(conn)
 }

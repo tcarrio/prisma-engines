@@ -7,8 +7,8 @@ async fn introspecting_a_table_enums_should_work(api: &TestApi) {
     let sql = format!("CREATE Type color as ENUM ( 'black', 'white')");
     let sql2 = format!("CREATE Type color2 as ENUM ( 'black2', 'white2')");
 
-    api.database().execute_raw(&sql, &[]).await.unwrap();
-    api.database().execute_raw(&sql2, &[]).await.unwrap();
+    api.database().raw_cmd(&sql).await.unwrap();
+    api.database().raw_cmd(&sql2).await.unwrap();
 
     api.barrel()
         .execute(|migration| {
@@ -55,8 +55,8 @@ async fn introspecting_a_table_enums_should_return_alphabetically_even_when_in_d
     let sql1 = format!("CREATE Type color as ENUM ( 'black', 'white')");
     let sql2 = format!("CREATE Type color2 as ENUM ( 'black2', 'white2')");
 
-    api.database().execute_raw(&sql2, &[]).await.unwrap();
-    api.database().execute_raw(&sql1, &[]).await.unwrap();
+    api.database().raw_cmd(&sql2).await.unwrap();
+    api.database().raw_cmd(&sql1).await.unwrap();
 
     api.barrel()
         .execute(|migration| {
@@ -102,7 +102,7 @@ async fn introspecting_a_table_enums_should_return_alphabetically_even_when_in_d
 async fn introspecting_a_table_enums_array_should_work(api: &TestApi) {
     let sql = format!("CREATE Type color as ENUM ( 'black', 'white')");
 
-    api.database().execute_raw(&sql, &[]).await.unwrap();
+    api.database().raw_cmd(&sql).await.unwrap();
 
     api.barrel()
         .execute(|migration| {
@@ -138,7 +138,7 @@ async fn introspecting_a_table_enums_array_should_work(api: &TestApi) {
 async fn introspecting_a_table_with_enum_default_values_should_work(api: &TestApi) {
     let sql = format!("CREATE Type color as ENUM ( 'black', 'white')");
 
-    api.database().execute_raw(&sql, &[]).await.unwrap();
+    api.database().raw_cmd(&sql).await.unwrap();
 
     api.barrel()
         .execute(|migration| {
@@ -169,7 +169,7 @@ async fn introspecting_a_table_with_enum_default_values_should_work(api: &TestAp
 async fn introspecting_a_table_with_enum_default_values_should_work_2(api: &TestApi) {
     let sql = format!("CREATE Type color as ENUM ('black', 'white')");
 
-    api.database().execute_raw(&sql, &[]).await.unwrap();
+    api.database().raw_cmd(&sql).await.unwrap();
 
     api.barrel()
         .execute(|migration| {
@@ -200,7 +200,7 @@ async fn introspecting_a_table_with_enum_default_values_should_work_2(api: &Test
 async fn introspecting_a_table_with_enum_default_values_that_look_like_booleans_should_work(api: &TestApi) {
     let sql = format!("CREATE Type Truth as ENUM ( 'true', 'false', 'rumor')");
 
-    api.database().execute_raw(&sql, &[]).await.unwrap();
+    api.database().raw_cmd(&sql).await.unwrap();
 
     api.barrel()
         .execute(|migration| {
@@ -232,7 +232,7 @@ async fn introspecting_a_table_with_enum_default_values_that_look_like_booleans_
 async fn introspecting_an_enum_with_an_invalid_value_should_work(api: &TestApi) {
     let sql = format!("CREATE Type status as ENUM ( '1', 'UNDEFINED')");
 
-    api.database().execute_raw(&sql, &[]).await.unwrap();
+    api.database().raw_cmd(&sql).await.unwrap();
 
     api.barrel()
         .execute(|migration| {
@@ -254,7 +254,7 @@ async fn introspecting_an_enum_with_an_invalid_value_should_work(api: &TestApi) 
 async fn introspecting_an_enum_with_an_invalid_value_as_default_should_work(api: &TestApi) {
     let sql = format!("CREATE Type status as ENUM ( '1', 'UNDEFINED')");
 
-    api.database().execute_raw(&sql, &[]).await.unwrap();
+    api.database().raw_cmd(&sql).await.unwrap();
 
     api.barrel()
         .execute(|migration| {
@@ -276,7 +276,7 @@ async fn introspecting_an_enum_with_an_invalid_value_as_default_should_work(api:
 async fn introspecting_a_table_with_an_enum_default_value_that_is_an_empty_string_should_work(api: &TestApi) {
     let sql = format!("CREATE Type strings as ENUM ( 'non_empty', '')");
 
-    api.database().execute_raw(&sql, &[]).await.unwrap();
+    api.database().raw_cmd(&sql).await.unwrap();
 
     api.barrel()
         .execute(|migration| {

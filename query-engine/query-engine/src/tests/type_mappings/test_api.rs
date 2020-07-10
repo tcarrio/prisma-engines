@@ -26,7 +26,7 @@ impl TestApi {
     }
 
     pub async fn execute_sql(&self, sql: &str) -> anyhow::Result<()> {
-        self.connection.execute_raw(sql, &[]).await?;
+        self.connection.raw_cmd(sql).await?;
 
         Ok(())
     }

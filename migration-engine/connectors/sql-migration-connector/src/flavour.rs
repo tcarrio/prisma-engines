@@ -52,13 +52,9 @@ pub(crate) trait SqlFlavour: DestructiveChangeCheckerFlavour {
     async fn create_database(&self, database_url: &str) -> ConnectorResult<String>;
 
     /// Create a temporary database and connect to it.
-    async fn create_temporary_database(&self) -> ConnectorResult<TemporaryDatabase> {
-        todo!("create_temporary_database")
-    }
+    async fn create_temporary_database(&self) -> ConnectorResult<TemporaryDatabase>;
 
-    async fn drop_temporary_database(&self, temporary_database: &TemporaryDatabase) -> ConnectorResult<()> {
-        todo!("drop_temporary_database")
-    }
+    async fn drop_temporary_database(&self, temporary_database: &TemporaryDatabase) -> ConnectorResult<()>;
 
     /// Introspect the SQL schema.
     async fn describe_schema<'a>(
@@ -130,6 +126,13 @@ impl SqlFlavour for MysqlFlavour {
         conn.raw_cmd(&schema_sql).await?;
 
         Ok(())
+    }
+
+    async fn create_temporary_database(&self) -> ConnectorResult<TemporaryDatabase> {
+        todo!("create_temporary_database");
+    }
+    async fn drop_temporary_database(&self, temporary_database: &TemporaryDatabase) -> ConnectorResult<()> {
+        todo!("drop_temporary_database")
     }
 }
 
@@ -238,6 +241,13 @@ impl SqlFlavour for PostgresFlavour {
         conn.raw_cmd(&schema_sql).await?;
 
         Ok(())
+    }
+
+    async fn create_temporary_database(&self) -> ConnectorResult<TemporaryDatabase> {
+        todo!("create_temporary_database");
+    }
+    async fn drop_temporary_database(&self, temporary_database: &TemporaryDatabase) -> ConnectorResult<()> {
+        todo!("drop_temporary_database")
     }
 }
 

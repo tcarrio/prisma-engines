@@ -60,6 +60,7 @@ pub trait GenericApi: Send + Sync + 'static {
         &self,
         input: &GenerateImperativeMigrationInput,
     ) -> CoreResult<GenerateImperativeMigrationOutput>;
+    async fn up(&self, input: &UpInput) -> CoreResult<UpOutput>;
     fn connector_type(&self) -> &'static str;
 
     fn render_error(&self, error: crate::error::Error) -> user_facing_errors::Error {
@@ -152,6 +153,12 @@ where
                 "GenerateImperativeMigration",
                 name = input.migration_name.as_str(),
             ))
+            .await
+    }
+
+    async fn up(&self, input: &UpInput) -> CoreResult<UpOutput> {
+        self.handle_command::<UpCommand<'_>>(input)
+            .instrument(tracing::info_span!("Up",))
             .await
     }
 

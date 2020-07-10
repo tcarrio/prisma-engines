@@ -36,7 +36,7 @@ impl DestructiveCheckPlan {
     }
 
     pub(super) fn pure_check(&self) -> DestructiveChangeDiagnostics {
-        let mut results = DatabaseInspectionResults::default();
+        let results = DatabaseInspectionResults::default();
         let mut diagnostics = DestructiveChangeDiagnostics::new();
 
         for unexecutable in &self.unexecutable_migrations {

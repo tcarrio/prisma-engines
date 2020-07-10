@@ -90,6 +90,8 @@ pub trait MigrationConnector: Send + Sync + 'static {
         schema_string: &str,
         migration_name: &str,
     ) -> ConnectorResult<(ImperativeMigration, Self::DatabaseMigration)>;
+
+    async fn apply_imperative_migration(&self, migration: &ImperativeMigration) -> ConnectorResult<()>;
 }
 
 pub trait DatabaseMigrationMarker: Debug + Send + Sync {

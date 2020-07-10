@@ -1,7 +1,7 @@
 use anyhow::Context;
 use colored::Colorize;
 use migration_connector::ImperativeMigration;
-use migration_core::commands::{GenerateImperativeMigrationInput, PushSchemaInput};
+use migration_core::commands::{GenerateImperativeMigrationInput, PushSchemaInput, UpInput};
 use std::{fs::File, io::Read};
 use structopt::*;
 
@@ -35,6 +35,8 @@ enum Command {
     PushSchema(PushSchema),
     /// Save an imperative migration based on the provided schema and migrations folder.
     MigrateSave(MigrateSave),
+    /// Apply imperative migrations based on the provided schema (only for the datasource) and migrations folder.
+    MigrateUp(MigrateUp),
 }
 
 #[derive(Debug, StructOpt)]
@@ -45,6 +47,14 @@ struct MigrateSave {
     migrations_folder_path: String,
     #[structopt(long)]
     migration_name: String,
+}
+
+#[derive(Debug, StructOpt)]
+struct MigrateUp {
+    #[structopt(long)]
+    schema_path: String,
+    #[structopt(long)]
+    migrations_folder_path: String,
 }
 
 #[derive(StructOpt)]
@@ -73,6 +83,7 @@ async fn main() -> anyhow::Result<()> {
     init_logger();
 
     match Command::from_args() {
+        Command::MigrateUp(cmd) => migrate_up(&cmd).await?,
         Command::MigrateSave(cmd) => generate_migration(&cmd).await?,
         Command::PushSchema(cmd) => push_schema(&cmd).await?,
         Command::Dmmf(cmd) => generate_dmmf(&cmd).await?,
@@ -166,8 +177,6 @@ fn read_datamodel_from_file(path: &str) -> std::io::Result<String> {
 }
 
 fn read_datamodel_from_stdin() -> std::io::Result<String> {
-    use std::io::Read;
-
     eprintln!("{} {}", "reading the prisma schema from".bold(), "stdin".yellow());
 
     let mut stdin = std::io::stdin();
@@ -364,6 +373,26 @@ async fn generate_migration(cmd: &MigrateSave) -> anyhow::Result<()> {
         "{}  {}",
         "✔️".bold(),
         format!("Migration written to {}.", migration_file_path.to_string_lossy()).green()
+    );
+
+    Ok(())
+}
+
+async fn migrate_up(cmd: &MigrateUp) -> anyhow::Result<()> {
+    let schema = read_datamodel_from_file(&cmd.schema_path)?;
+
+    let migrations = read_migrations_from_folder(&cmd.migrations_folder_path)?;
+
+    let api = migration_core::migration_api(&schema).await?;
+
+    let input = UpInput { migrations };
+
+    api.up(&input).await?;
+
+    eprintln!(
+        "{}  {}",
+        "✔️".bold(),
+        format!("All migrations were successfully applied").green()
     );
 
     Ok(())

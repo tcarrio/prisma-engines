@@ -112,17 +112,15 @@ impl SqlMigrationConnector {
         self.flavour.describe_schema(schema_name, conn).await
     }
 
-    #[tracing::instrument(skip(self, migrations, db))]
-    async fn apply_imperative_migrations(
+    #[tracing::instrument(skip(self, migration, conn))]
+    async fn apply_imperative_migration_impl(
         &self,
-        migrations: &[ImperativeMigration],
-        db: &TemporaryDatabase,
+        migration: &ImperativeMigration,
+        conn: &dyn Queryable,
     ) -> SqlResult<()> {
-        for migration in migrations {
-            for step in &migration.steps {
-                tracing::debug!(step = step.as_str(), "Applying migration step.");
-                db.conn.raw_cmd(step).await?;
-            }
+        for step in &migration.steps {
+            tracing::debug!(step = step.as_str(), "Applying migration step.");
+            conn.raw_cmd(step).await?;
         }
 
         Ok(())
@@ -194,14 +192,15 @@ impl MigrationConnector for SqlMigrationConnector {
         migration_name: &str,
     ) -> ConnectorResult<(ImperativeMigration, SqlMigration)> {
         let temporary_database = self.flavour.create_temporary_database().await?;
-        let inferrer = self.database_migration_inferrer();
         let applier = self.database_migration_step_applier();
 
-        catch(
-            self.connection_info(),
-            self.apply_imperative_migrations(past_migrations, &temporary_database),
-        )
-        .await?;
+        for migration in past_migrations {
+            catch(
+                self.connection_info(),
+                self.apply_imperative_migration_impl(migration, &temporary_database.conn),
+            )
+            .await?;
+        }
 
         let current_database_schema = self
             .flavour()
@@ -238,6 +237,14 @@ impl MigrationConnector for SqlMigrationConnector {
         self.flavour.drop_temporary_database(&temporary_database).await?;
 
         Ok((imperative_migration, sql_migration))
+    }
+
+    async fn apply_imperative_migration(&self, migration: &ImperativeMigration) -> ConnectorResult<()> {
+        catch(
+            self.connection_info(),
+            self.apply_imperative_migration_impl(migration, self.conn()),
+        )
+        .await
     }
 }
 

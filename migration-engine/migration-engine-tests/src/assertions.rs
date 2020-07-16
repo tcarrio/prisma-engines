@@ -42,7 +42,7 @@ impl SchemaAssertion {
     }
 
     fn find_table(&self, table_name: &str) -> anyhow::Result<&sql_schema_describer::Table> {
-        match self.0.table(table_name) {
+        match dbg!(&self.0).table(table_name) {
             Ok(table) => Ok(table),
             Err(_) => Err(anyhow::anyhow!(
                 "assert_has_table failed. Table {} not found. Tables in database: {:?}",

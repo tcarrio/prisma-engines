@@ -770,7 +770,7 @@ async fn migrating_a_required_column_from_int_to_string_should_warn_and_cast(api
 
 #[test_each_connector(capabilities("enums"))]
 async fn enum_variants_can_be_added_without_data_loss(api: &TestApi) -> TestResult {
-    let dm1 = r#"
+    let dm1 = r"
         model Cat {
             id String @id
             mood Mood
@@ -787,6 +787,7 @@ async fn enum_variants_can_be_added_without_data_loss(api: &TestApi) -> TestResu
         }
     "#;
 
+    dbg!(1);
     api.infer_apply(dm1)
         .migration_id(Some("initial-setup"))
         .send()
@@ -794,10 +795,12 @@ async fn enum_variants_can_be_added_without_data_loss(api: &TestApi) -> TestResu
         .assert_green()?;
 
     {
+        dbg!(1);
         let cat_inserts = quaint::ast::Insert::multi_into(api.render_table_name("Cat"), vec!["id", "mood"])
             .values((Value::text("felix"), Value::enum_variant("HUNGRY")))
             .values((Value::text("mittens"), Value::enum_variant("HAPPY")));
 
+        dbg!(1);
         api.database().query(cat_inserts.into()).await?;
     }
 
@@ -819,17 +822,21 @@ async fn enum_variants_can_be_added_without_data_loss(api: &TestApi) -> TestResu
         }
     "#;
 
+    dbg!(1);
     api.infer_apply(dm2)
         .migration_id(Some("add-absolutely-fabulous-variant"))
         .send()
         .await?
         .assert_green()?;
+    dbg!(1);
 
     // Assertions
     {
         let cat_data = api.dump_table("Cat").await?;
+        dbg!(1);
         let cat_data: Vec<Vec<quaint::ast::Value>> =
             cat_data.into_iter().map(|row| row.into_iter().collect()).collect();
+        dbg!(1);
 
         let expected_cat_data = if api.sql_family().is_mysql() {
             vec![
@@ -842,15 +849,22 @@ async fn enum_variants_can_be_added_without_data_loss(api: &TestApi) -> TestResu
                 vec![Value::text("mittens"), Value::enum_variant("HAPPY")],
             ]
         };
+        dbg!(1);
 
         assert_eq!(cat_data, expected_cat_data);
 
+        dbg!(1);
         let human_data = api.dump_table("Human").await?;
+        dbg!(1);
         let human_data: Vec<Vec<Value>> = human_data.into_iter().map(|row| row.into_iter().collect()).collect();
+        dbg!(1);
         let expected_human_data: Vec<Vec<Value>> = Vec::new();
+        dbg!(1);
         assert_eq!(human_data, expected_human_data);
+        dbg!(1);
 
         if api.sql_family().is_mysql() {
+            dbg!(1);
             api.assert_schema()
                 .await?
                 .assert_enum("Cat_mood", |enm| {
@@ -860,6 +874,7 @@ async fn enum_variants_can_be_added_without_data_loss(api: &TestApi) -> TestResu
                     enm.assert_values(&["HAPPY", "HUNGRY", "ABSOLUTELY_FABULOUS"])
                 })?;
         } else {
+            dbg!(1);
             api.assert_schema().await?.assert_enum("Mood", |enm| {
                 enm.assert_values(&["ABSOLUTELY_FABULOUS", "HAPPY", "HUNGRY"])
             })?;

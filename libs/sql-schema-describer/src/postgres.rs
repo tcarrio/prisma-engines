@@ -373,8 +373,7 @@ impl SqlSchemaDescriber {
                 .get("table_name")
                 .and_then(|x| x.to_string())
                 .expect("get table_name");
-            let confdeltype = row
-                .get("confdeltype")
+            let confdeltype = dbg!(row.get("confdeltype"))
                 .and_then(|x| x.as_char())
                 .expect("get confdeltype");
             let constraint_name = row

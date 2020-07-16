@@ -128,7 +128,11 @@ impl SqlSchemaDescriber {
         debug!("describing table columns, query: '{}'", sql);
         let result_set = self.conn.query_raw(&sql, vec![]).await.unwrap();
         let mut pk_cols: HashMap<i64, String> = HashMap::new();
-        let mut cols: Vec<Column> = result_set
+
+        dbg!(&sql);
+        //std::thread::sleep(std::time::Duration::from_secs(6000));
+
+        let mut cols: Vec<Column> = dbg!(result_set)
             .into_iter()
             .map(|row| {
                 debug!("Got column row {:?}", row);

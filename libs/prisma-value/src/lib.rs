@@ -37,7 +37,10 @@ pub enum TypeHint {
 pub enum PrismaValue {
     String(String),
     Boolean(bool),
-    Enum(String),
+    Enum {
+        name: String,
+        variant: String,
+    },
     Int(i64),
 
     #[serde(serialize_with = "serialize_null")]
